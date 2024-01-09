@@ -2,6 +2,8 @@ import Image from "next/image"
 import { GetStaticProps } from "next"
 import Link from "next/link"
 
+import Head from "next/head"
+
 import { useKeenSlider } from 'keen-slider/react'
 
 import { stripe } from "../lib/stripe"
@@ -28,26 +30,32 @@ export default function Home({ products }: HomeProps) {
   });
 
   return (
-    <HomeContainer ref={sliderRef} className="keen-slider">
+    <>
+      <Head>
+        <title>Ignite Shop</title>
+      </Head>
 
-      {products.map(product => {
-        return (
-        <Link href={`/product/${product.id}`} key={product.id}>
-          <Product
-            className="keen-slider__slide"
-          >
-            <Image src={product.imageUrl} width={520} height={480} alt="" />
+      <HomeContainer ref={sliderRef} className="keen-slider">
 
-            <footer>
-              <strong>{product.name}</strong>
-              <span>{product.price}</span>
-            </footer>
-          </Product>
-        </Link>
-        )
-      })}
+        {products.map(product => {
+          return (
+            <Link href={`/product/${product.id}`} key={product.id} prefetch={false}>
+            <Product
+              className="keen-slider__slide"
+              >
+              <Image src={product.imageUrl} width={520} height={480} alt="" />
 
-    </HomeContainer>
+              <footer>
+                <strong>{product.name}</strong>
+                <span>{product.price}</span>
+              </footer>
+            </Product>
+          </Link>
+          )
+        })}
+
+      </HomeContainer>
+    </>
   )
 }
 
@@ -55,7 +63,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
     expand: ['data.default_price']
   });
-
+  
 
   const products = response.data.map(product => {
     const price = product.default_price as Stripe.Price;
