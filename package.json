@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@stitches/react": "^1.2.8",
+    "@stripe/stripe-js": "^2.3.0",
     "axios": "^1.6.5",
     "keen-slider": "^6.8.6",
     "next": "14.0.4",
@@ -21,6 +22,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/stripe": "^8.0.417",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "typescript": "^5"

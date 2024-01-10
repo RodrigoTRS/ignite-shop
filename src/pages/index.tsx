@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { GetStaticProps } from "next"
 import Link from "next/link"
+import Bag from '../assets/icons/bag.svg'
 
 import Head from "next/head"
 
@@ -11,6 +12,8 @@ import { HomeContainer, Product } from "../styles/pages/home"
 
 import 'keen-slider/keen-slider.min.css'
 import Stripe from "stripe"
+import { useContext } from "react"
+import { CartContext } from "@/contexts/CartContext"
 
 interface HomeProps {
   products: {
@@ -18,10 +21,14 @@ interface HomeProps {
     name: string
     imageUrl: string
     price: string
-  }[]
+  }[],
+  openCartFuntion: () => void;
 }
 
-export default function Home({ products }: HomeProps) {
+export default function Home({ products, openCartFuntion }: HomeProps) {
+
+  const { openCart, isCartOpen } = useContext(CartContext)
+
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 2,
@@ -29,10 +36,13 @@ export default function Home({ products }: HomeProps) {
     }
   });
 
+  function addItemToCart() {
+  }
+
   return (
     <>
       <Head>
-        <title>Ignite Shop</title>
+        <title>Home - Ignite Shop</title>
       </Head>
 
       <HomeContainer ref={sliderRef} className="keen-slider">
@@ -46,8 +56,8 @@ export default function Home({ products }: HomeProps) {
               <Image src={product.imageUrl} width={520} height={480} alt="" />
 
               <footer>
-                <strong>{product.name}</strong>
-                <span>{product.price}</span>
+                  <strong>{product.name}</strong>
+                  <span>{product.price}</span>
               </footer>
             </Product>
           </Link>
