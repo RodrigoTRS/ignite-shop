@@ -1,9 +1,10 @@
-import { CartContainer, CheckoutButton, CloseCart, ProductListingContainer, SummaryContainer, SummaryLine } from "@/styles/cart";
+import { CartContainer, CheckoutButton, CloseCart, ProductListingContainer, SummaryContainer, SummaryLine, SummaryLineTotal } from "@/styles/cart";
 import CloseImg from '../assets/icons/close.svg'
 import Image from "next/image";
 import { useContext, useState } from "react";
 import { CartContext } from "@/contexts/CartContext";
 import { CartItem } from "./cartItem";
+import { priceFormatter } from "@/utils/formatters";
 
 
 export function Cart() {
@@ -41,20 +42,27 @@ export function Cart() {
                 {
                     (cartProducts.length > 0) && cartProducts.map((product) => {
                         return (
-                            <CartItem product={product} key={product.id} />
+                            <CartItem product={product.product} internalId={product.internalId} key={product.internalId} />
                         )
                     })
                 }
+
+                {cartProducts.length === 0 &&
+                    <p>Carrinho vazio</p>
+                }
             </ProductListingContainer>
+
+            
+
             <SummaryContainer>
                 <SummaryLine>
                     <span>Quantidade</span>
                     <span>{cartProducts.length}</span>
                 </SummaryLine>
-                <SummaryLine>
+                <SummaryLineTotal>
                     <span>Valor total</span>
-                    <span>{total}</span>
-                </SummaryLine>
+                    <span>{priceFormatter(total)}</span>
+                </SummaryLineTotal>
                 <CheckoutButton disabled={isCreatingCheckoutSession}>
                     Finalizar compra
                 </CheckoutButton>

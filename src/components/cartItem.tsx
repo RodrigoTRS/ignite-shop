@@ -1,35 +1,39 @@
 import { CartContext } from "@/contexts/CartContext";
 import { ImageContainer, ProductListing, ProductListingText } from "@/styles/cart";
+import { priceFormatter } from "@/utils/formatters";
 import Image from "next/image";
 import { useContext } from "react";
+import Stripe from "stripe";
 
 interface CartItemProps {
+    internalId: string,
     product: {
         id: string
         name: string
         imageUrl: string
-        price: string
+        price: Stripe.Price
         description: string
         defaultPriceId: string
     }
+    
 }
 
-export function CartItem({ product }: CartItemProps) {
+export function CartItem(props: CartItemProps) {
 
     const { removeFromCart } = useContext(CartContext);
 
     function handleRemoveFromCart() {
-        removeFromCart(product)
+        removeFromCart(props.internalId)
     }
 
     return (
         <ProductListing>
             <ImageContainer>
-                <Image src={product.imageUrl} width={80} height={80} alt={product.name} />
+                <Image src={props.product.imageUrl} width={80} height={80} alt={props.product.name} />
             </ImageContainer>
             <ProductListingText>
-                <p>{product.name}</p>
-                <span>{product.price}</span>
+                <p>{props.product.name}</p>
+                <span>{priceFormatter(props.product.price.unit_amount!)}</span>
                 <button onClick={handleRemoveFromCart}>
                     Remover
                 </button>

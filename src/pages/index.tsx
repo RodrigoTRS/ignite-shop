@@ -12,22 +12,23 @@ import { HomeContainer, Product } from "../styles/pages/home"
 
 import 'keen-slider/keen-slider.min.css'
 import Stripe from "stripe"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { CartContext } from "@/contexts/CartContext"
+import { priceFormatter } from "@/utils/formatters"
 
 interface HomeProps {
   products: {
     id: string
     name: string
     imageUrl: string
-    price: string
+    price: Stripe.Price
   }[],
   openCartFuntion: () => void;
 }
 
-export default function Home({ products, openCartFuntion }: HomeProps) {
 
-  const { openCart, isCartOpen } = useContext(CartContext)
+
+export default function Home({ products, openCartFuntion }: HomeProps) {
 
   const [sliderRef] = useKeenSlider({
     slides: {
@@ -35,9 +36,6 @@ export default function Home({ products, openCartFuntion }: HomeProps) {
       spacing: 48
     }
   });
-
-  function addItemToCart() {
-  }
 
   return (
     <>
@@ -57,7 +55,7 @@ export default function Home({ products, openCartFuntion }: HomeProps) {
 
               <footer>
                   <strong>{product.name}</strong>
-                  <span>{product.price}</span>
+                  <span>{priceFormatter(product.price.unit_amount!)}</span>
               </footer>
             </Product>
           </Link>
@@ -82,10 +80,7 @@ export const getStaticProps: GetStaticProps = async () => {
       id: product.id,
       name: product.name,
       imageUrl: product.images[0],
-      price: new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      }).format(price.unit_amount! / 100),
+      price: price,
     }
   })
 

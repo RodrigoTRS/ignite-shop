@@ -19,7 +19,6 @@ export const CartContainer = styled('div', {
     }
 })
 
-
 export const CloseCart = styled('button', {
     display: 'flex',
     alignItems: 'center',
@@ -120,7 +119,17 @@ export const SummaryLine = styled('span', {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    fontSize: '16px'
+})
+
+export const SummaryLineTotal = styled('span', {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    fontSize: '$lg',
+    fontWeight: 'bold'
 })
 
 export const CheckoutButton = styled('button', {
@@ -146,3 +155,4 @@ export const CheckoutButton = styled('button', {
         background: '$green300',
     }
 })
+

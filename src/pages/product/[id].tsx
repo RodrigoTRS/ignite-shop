@@ -8,13 +8,14 @@ import { useRouter } from 'next/router';
 import { useContext } from "react";
 import Head from "next/head";
 import { CartContext } from "@/contexts/CartContext";
+import { priceFormatter } from "@/utils/formatters";
 
 interface ProductProps {
     product: {
         id: string
         name: string
         imageUrl: string
-        price: string
+        price: Stripe.Price
         description: string
         defaultPriceId: string
     }
@@ -31,6 +32,7 @@ export default function Product({ product }: ProductProps) {
     }
 
     async function handleAddToCart() {
+        
         addToCart(product);
         openCart();
     }
@@ -49,7 +51,7 @@ export default function Product({ product }: ProductProps) {
 
                 <ProductDetails>
                     <h1>{product.name}</h1>
-                    <span>{product.price}</span>
+                    <span>{priceFormatter(product.price.unit_amount!)}</span>
 
                     <p>{product.description}</p>
 
@@ -88,10 +90,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
             id: product.id,
             name: product.name,
             imageUrl: product.images[0],
-            price: new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-            }).format(price.unit_amount! / 100),
+            price: price,
             description: product.description,
             defaultPriceId: price.id,
         }
