@@ -23,7 +23,7 @@ interface ProductProps {
 
 export default function Product({ product }: ProductProps) {
 
-    const { openCart, isCartOpen, addToCart, cartProducts } = useContext(CartContext)
+    const { isCartOpen, addToCart, cartProducts } = useContext(CartContext)
 
     const { isFallback } = useRouter()
 
@@ -32,9 +32,7 @@ export default function Product({ product }: ProductProps) {
     }
 
     async function handleAddToCart() {
-        
         addToCart(product);
-        openCart();
     }
 
 
