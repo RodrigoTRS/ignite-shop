@@ -1,34 +1,44 @@
 import { CartContainer, CheckoutButton, CloseCart, ProductListingContainer, SummaryContainer, SummaryLine, SummaryLineTotal } from "@/styles/cart";
 import CloseImg from '../assets/icons/close.svg'
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CartContext } from "@/contexts/CartContext";
 import { CartItem } from "./cartItem";
 import { priceFormatter } from "@/utils/formatters";
+import axios from "axios";
+
 
 
 export function Cart() {
 
     const [ isCreatingCheckoutSession, setIsCreatingCheckoutSession ] = useState(false);
-
-    const { cartProducts, closeCart, total } = useContext(CartContext);
+    
+    const { checkoutLineItems, cartProducts, closeCart, total } = useContext(CartContext);
 
     async function createCheckoutSession() {
         try {
             setIsCreatingCheckoutSession(true)
+            
+            const response = await axios.post('/api/checkout', {
+                lineItems: checkoutLineItems,
+            })
 
-            // const response = await axios.post('/api/checkout', {
-            //     priceId: product.defaultPriceId,
-            // })
-
-            // const { checkoutUrl } = response.data;
-
-            // window.location.href = checkoutUrl
+            const { checkoutUrl } = response.data;
+            
+            window.location.href = checkoutUrl
+            
         } catch (err) {
             // Conectar com uma ferramenta de observabilidade (Datadog / Sentry)
-            setIsCreatingCheckoutSession(false)
             alert('Falha ao redirecionar ao checkout!')
+            console.error(err)
+        } finally {
+            setIsCreatingCheckoutSession(false)
         }
+    }
+    
+    
+    function handleCheckoutClick() {
+        createCheckoutSession()
     }
 
     return (
@@ -63,7 +73,7 @@ export function Cart() {
                     <span>Valor total</span>
                     <span>{priceFormatter(total)}</span>
                 </SummaryLineTotal>
-                <CheckoutButton disabled={isCreatingCheckoutSession}>
+                <CheckoutButton disabled={isCreatingCheckoutSession} onClick={handleCheckoutClick}>
                     Finalizar compra
                 </CheckoutButton>
             </SummaryContainer>
